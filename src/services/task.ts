@@ -1,4 +1,4 @@
-import { apiRequest } from '@/lib/api';
+import { apiRequest, handleValidationErrors } from '@/lib/api';
 import type {
 	CreateTaskDto,
 	UpdateTaskDto,
@@ -37,10 +37,12 @@ export const taskService = {
 
 	// Create a new task
 	createTask: async (data: CreateTaskDto): Promise<TaskResponseDto> => {
-		return apiRequest<TaskResponseDto>('/api/v1/tasks', {
+		const response = await apiRequest<TaskResponseDto>('/api/v1/tasks', {
 			method: 'POST',
 			body: JSON.stringify(data),
 		});
+
+		return handleValidationErrors(response);
 	},
 
 	// Update a task
@@ -48,10 +50,12 @@ export const taskService = {
 		id: string,
 		data: UpdateTaskDto
 	): Promise<TaskResponseDto> => {
-		return apiRequest<TaskResponseDto>(`/api/v1/tasks/${id}`, {
+		const response = await apiRequest<TaskResponseDto>(`/api/v1/tasks/${id}`, {
 			method: 'PATCH',
 			body: JSON.stringify(data),
 		});
+
+		return handleValidationErrors(response);
 	},
 
 	// Delete a task
