@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search, Filter } from 'lucide-react';
-import { useDebounce } from '@/hooks/use-debounce';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -78,15 +77,11 @@ export function FilterCanvas({ onFiltersChange }: FilterCanvasProps) {
 		sortOrder: (searchParams.get('sortOrder') as 'asc' | 'desc') || 'desc',
 	});
 
-	// Local state for search inputs to enable debouncing
+	// Local state for search inputs
 	const [titleSearch, setTitleSearch] = useState(filters.title);
 	const [descriptionSearch, setDescriptionSearch] = useState(
 		filters.description
 	);
-
-	// Debounced values
-	const debouncedTitle = useDebounce(titleSearch, 300);
-	const debouncedDescription = useDebounce(descriptionSearch, 300);
 
 	// Update URL with current state
 	const updateURL = (
@@ -163,18 +158,23 @@ export function FilterCanvas({ onFiltersChange }: FilterCanvasProps) {
 		onFiltersChange(resetFilters, resetSort, true);
 	};
 
-	// Update filters when debounced values change
-	useEffect(() => {
-		if (debouncedTitle !== filters.title) {
-			handleFilterChange('title', debouncedTitle);
-		}
-	}, [debouncedTitle, filters.title]);
+	// Handle search button click
+	const handleSearch = () => {
+		const newFilters = {
+			...filters,
+			title: titleSearch,
+			description: descriptionSearch,
+		};
+		setFilters(newFilters);
+		updateURL(newFilters, sort, true); // Reset pagination when searching
+	};
 
-	useEffect(() => {
-		if (debouncedDescription !== filters.description) {
-			handleFilterChange('description', debouncedDescription);
+	// Handle Enter key press in search inputs
+	const handleKeyPress = (e: React.KeyboardEvent) => {
+		if (e.key === 'Enter') {
+			handleSearch();
 		}
-	}, [debouncedDescription, filters.description]);
+	};
 
 	// Update local state when URL changes externally
 	useEffect(() => {
@@ -208,7 +208,7 @@ export function FilterCanvas({ onFiltersChange }: FilterCanvasProps) {
 					Filters
 				</Button>
 			</SheetTrigger>
-			<SheetContent className='overflow-y-auto px-4'>
+			<SheetContent className='overflow-y-auto px-4 w-full sm:max-w-lg'>
 				<SheetHeader className='pb-4'>
 					<SheetTitle>Filters & Search</SheetTitle>
 				</SheetHeader>
@@ -224,6 +224,7 @@ export function FilterCanvas({ onFiltersChange }: FilterCanvasProps) {
 									placeholder='Search by title...'
 									value={titleSearch}
 									onChange={(e) => setTitleSearch(e.target.value)}
+									onKeyPress={handleKeyPress}
 									className='pl-9'
 								/>
 							</div>
@@ -239,10 +240,17 @@ export function FilterCanvas({ onFiltersChange }: FilterCanvasProps) {
 									placeholder='Search by description...'
 									value={descriptionSearch}
 									onChange={(e) => setDescriptionSearch(e.target.value)}
+									onKeyPress={handleKeyPress}
 									className='pl-9'
 								/>
 							</div>
 						</div>
+
+						{/* Search Button */}
+						<Button onClick={handleSearch} className='w-full' variant='default'>
+							<Search className='mr-2 h-4 w-4' />
+							Search
+						</Button>
 
 						{/* Status Filter */}
 						<div className='space-y-2'>

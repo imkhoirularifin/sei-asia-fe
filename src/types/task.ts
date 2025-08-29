@@ -54,9 +54,12 @@ export interface PaginatedTaskResponseDto
 // Task statistics
 export interface TaskStats {
 	total: number;
-	not_started: number;
-	in_progress: number;
-	done: number;
+	overdue: number;
+	byStatus: {
+		not_started?: number;
+		in_progress?: number;
+		done?: number;
+	};
 }
 
 export interface TaskStatsResponseDto extends ApiResponse<TaskStats> {}

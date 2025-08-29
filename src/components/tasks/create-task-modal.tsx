@@ -81,7 +81,7 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent className='sm:max-w-[425px]'>
+			<DialogContent className='sm:max-w-[425px] mx-4 w-full max-w-[calc(100vw-2rem)]'>
 				<DialogHeader>
 					<DialogTitle>Create New Task</DialogTitle>
 					<DialogDescription>
@@ -169,11 +169,20 @@ export function CreateTaskModal({ open, onOpenChange }: CreateTaskModalProps) {
 							)}
 						/>
 
-						<DialogFooter>
-							<Button type='button' variant='outline' onClick={handleClose}>
+						<DialogFooter className='flex-col sm:flex-row gap-2 sm:gap-0'>
+							<Button
+								type='button'
+								variant='outline'
+								onClick={handleClose}
+								className='w-full sm:w-auto order-2 sm:order-1'
+							>
 								Cancel
 							</Button>
-							<Button type='submit' disabled={createTaskMutation.isPending}>
+							<Button
+								type='submit'
+								disabled={createTaskMutation.isPending}
+								className='w-full sm:w-auto order-1 sm:order-2'
+							>
 								{createTaskMutation.isPending ? 'Creating...' : 'Create Task'}
 							</Button>
 						</DialogFooter>

@@ -127,7 +127,7 @@ export function EditTaskModal({
 	if (isLoading) {
 		return (
 			<Dialog open={open} onOpenChange={handleClose}>
-				<DialogContent className='sm:max-w-[425px]'>
+				<DialogContent className='sm:max-w-[425px] mx-4 w-full max-w-[calc(100vw-2rem)]'>
 					<DialogHeader>
 						<DialogTitle>Loading Task...</DialogTitle>
 					</DialogHeader>
@@ -142,15 +142,17 @@ export function EditTaskModal({
 	if (!taskResponse?.data) {
 		return (
 			<Dialog open={open} onOpenChange={handleClose}>
-				<DialogContent className='sm:max-w-[425px]'>
+				<DialogContent className='sm:max-w-[425px] mx-4 w-full max-w-[calc(100vw-2rem)]'>
 					<DialogHeader>
 						<DialogTitle>Error</DialogTitle>
 						<DialogDescription>
 							Failed to load task data. Please try again.
 						</DialogDescription>
 					</DialogHeader>
-					<DialogFooter>
-						<Button onClick={handleClose}>Close</Button>
+					<DialogFooter className='flex-col sm:flex-row gap-2 sm:gap-0'>
+						<Button onClick={handleClose} className='w-full sm:w-auto'>
+							Close
+						</Button>
 					</DialogFooter>
 				</DialogContent>
 			</Dialog>
@@ -159,7 +161,7 @@ export function EditTaskModal({
 
 	return (
 		<Dialog open={open} onOpenChange={handleClose}>
-			<DialogContent className='sm:max-w-[425px]'>
+			<DialogContent className='sm:max-w-[425px] mx-4 w-full max-w-[calc(100vw-2rem)]'>
 				<DialogHeader>
 					<DialogTitle>Edit Task</DialogTitle>
 					<DialogDescription>Update the task details below.</DialogDescription>
@@ -255,11 +257,20 @@ export function EditTaskModal({
 							)}
 						/>
 
-						<DialogFooter>
-							<Button type='button' variant='outline' onClick={handleClose}>
+						<DialogFooter className='flex-col sm:flex-row gap-2 sm:gap-0'>
+							<Button
+								type='button'
+								variant='outline'
+								onClick={handleClose}
+								className='w-full sm:w-auto order-2 sm:order-1'
+							>
 								Cancel
 							</Button>
-							<Button type='submit' disabled={updateTaskMutation.isPending}>
+							<Button
+								type='submit'
+								disabled={updateTaskMutation.isPending}
+								className='w-full sm:w-auto order-1 sm:order-2'
+							>
 								{updateTaskMutation.isPending ? 'Updating...' : 'Update Task'}
 							</Button>
 						</DialogFooter>

@@ -38,16 +38,16 @@ import { EditTaskModal } from '@/components/tasks/edit-task-modal';
 import { useDeleteTask } from '@/queries/task';
 import type { Task } from '@/types/task';
 
-const getStatusBadgeVariant = (status: string) => {
+const getStatusBadgeColor = (status: string) => {
 	switch (status) {
 		case 'not_started':
-			return 'secondary';
+			return 'bg-yellow-100 text-yellow-800 border-yellow-300';
 		case 'in_progress':
-			return 'default';
+			return 'bg-blue-100 text-blue-800 border-blue-300';
 		case 'done':
-			return 'outline';
+			return 'bg-green-100 text-green-800 border-green-300';
 		default:
-			return 'secondary';
+			return 'bg-gray-100 text-gray-800 border-gray-300';
 	}
 };
 
@@ -119,7 +119,8 @@ export function TaskList({
 						</div>
 					) : (
 						<div className='space-y-4'>
-							<div className='rounded-lg border bg-card'>
+							{/* Desktop Table View */}
+							<div className='hidden md:block rounded-lg border bg-card'>
 								<Table>
 									<TableHeader>
 										<TableRow className='border-b bg-muted/50'>
@@ -161,8 +162,9 @@ export function TaskList({
 												</TableCell>
 												<TableCell className='py-4'>
 													<Badge
-														variant={getStatusBadgeVariant(task.status)}
-														className='font-medium'
+														className={`font-medium ${getStatusBadgeColor(
+															task.status
+														)}`}
 													>
 														{getStatusLabel(task.status)}
 													</Badge>
@@ -218,10 +220,89 @@ export function TaskList({
 								</Table>
 							</div>
 
+							{/* Mobile Card View */}
+							<div className='md:hidden space-y-3'>
+								{tasks.map((task) => (
+									<Card key={task.id} className='p-4'>
+										<div className='space-y-3'>
+											{/* Title and Actions Row */}
+											<div className='flex items-start justify-between gap-2'>
+												<h3 className='font-medium text-sm leading-tight flex-1 min-w-0'>
+													{task.title}
+												</h3>
+												<DropdownMenu>
+													<DropdownMenuTrigger asChild>
+														<Button
+															variant='ghost'
+															size='sm'
+															className='h-8 w-8 p-0 flex-shrink-0'
+														>
+															<MoreHorizontal className='h-4 w-4' />
+														</Button>
+													</DropdownMenuTrigger>
+													<DropdownMenuContent align='end' className='w-40'>
+														<DropdownMenuItem
+															onClick={() => setEditingTask(task.id)}
+															className='cursor-pointer'
+														>
+															<Edit className='mr-2 h-4 w-4' />
+															Edit
+														</DropdownMenuItem>
+														<DropdownMenuItem
+															onClick={() => setDeletingTaskId(task.id)}
+															className='text-destructive cursor-pointer'
+														>
+															<Trash2 className='mr-2 h-4 w-4' />
+															Delete
+														</DropdownMenuItem>
+													</DropdownMenuContent>
+												</DropdownMenu>
+											</div>
+
+											{/* Description */}
+											{task.description && (
+												<p className='text-sm text-muted-foreground line-clamp-2'>
+													{task.description}
+												</p>
+											)}
+
+											{/* Status Badge */}
+											<div className='flex items-center gap-2'>
+												<Badge
+													className={`font-medium text-xs ${getStatusBadgeColor(
+														task.status
+													)}`}
+												>
+													{getStatusLabel(task.status)}
+												</Badge>
+											</div>
+
+											{/* Dates */}
+											<div className='flex flex-col gap-1 text-xs text-muted-foreground'>
+												{task.dueDate && (
+													<div className='flex items-center gap-1'>
+														<span className='font-medium'>Due:</span>
+														<span>
+															{new Date(task.dueDate).toLocaleDateString()}
+														</span>
+													</div>
+												)}
+												<div className='flex items-center gap-1'>
+													<span className='font-medium'>Created:</span>
+													<span>
+														{new Date(task.createdAt).toLocaleDateString()}
+													</span>
+												</div>
+											</div>
+										</div>
+									</Card>
+								))}
+							</div>
+
 							{/* Pagination */}
 							{totalPages > 1 && (
-								<div className='flex items-center justify-between px-4 py-3 border-t bg-muted/30'>
-									<div className='text-sm text-muted-foreground font-medium'>
+								<div className='flex flex-col sm:flex-row items-center justify-between gap-3 px-4 py-3 border-t bg-muted/30'>
+									<div className='text-xs sm:text-sm text-muted-foreground font-medium text-center sm:text-left'>
 										Page {currentPage} of {totalPages} ({total} total tasks)
 									</div>
 									<div className='flex items-center gap-2'>
@@ -230,7 +311,7 @@ export function TaskList({
 											size='sm'
 											onClick={() => onPageChange(currentPage - 1)}
 											disabled={currentPage <= 1}
-											className='h-8'
+											className='h-8 text-xs sm:text-sm'
 										>
 											Previous
 										</Button>
@@ -239,7 +320,7 @@ export function TaskList({
 											size='sm'
 											onClick={() => onPageChange(currentPage + 1)}
 											disabled={currentPage >= totalPages}
-											className='h-8'
+											className='h-8 text-xs sm:text-sm'
 										>
 											Next
 										</Button>

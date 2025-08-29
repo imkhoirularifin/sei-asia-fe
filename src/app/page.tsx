@@ -2,14 +2,7 @@
 
 import { useState, useMemo, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import {
-	Plus,
-	LogOut,
-	CheckCircle2,
-	Clock,
-	AlertCircle,
-	ListTodo,
-} from 'lucide-react';
+import { Plus, LogOut } from 'lucide-react';
 
 import { useTasks } from '@/queries/task';
 import type {
@@ -33,6 +26,7 @@ import {
 import { FilterCanvas } from '@/components/tasks/filter-canvas';
 import { TaskList } from '@/components/tasks/task-list';
 import { CreateTaskModal } from '@/components/tasks/create-task-modal';
+import { TaskSummary } from '@/components/tasks/task-summary';
 
 export default function Page() {
 	const router = useRouter();
@@ -231,25 +225,34 @@ export default function Page() {
 	const total = tasksResponse?.data?.total || 0;
 
 	return (
-		<div className='min-h-screen bg-gray-50 py-8'>
-			<div className='container mx-auto space-y-8 max-w-5xl'>
+		<div className='min-h-screen bg-gray-50 py-4 sm:py-8'>
+			<div className='container mx-auto space-y-6 sm:space-y-8 max-w-5xl px-4'>
 				{/* Header */}
-				<div className='flex items-center justify-between'>
+				<div className='flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between'>
 					<div>
-						<h1 className='text-3xl font-bold tracking-tight'>
+						<h1 className='text-2xl sm:text-3xl font-bold tracking-tight'>
 							Welcome back, {user.username || 'User'}!
 						</h1>
 						<p className='text-muted-foreground'>
 							Manage your tasks and track your progress
 						</p>
 					</div>
-					<div className='flex items-center gap-2'>
-						<FilterCanvas onFiltersChange={handleFiltersChange} />
-						<Button onClick={() => setIsCreateModalOpen(true)}>
-							<Plus className='mr-2 h-4 w-4' />
-							Create Task
-						</Button>
-						<Button onClick={handleLogout} variant='outline'>
+					<div className='flex flex-col gap-2 sm:flex-row sm:items-center'>
+						<div className='flex gap-2'>
+							<FilterCanvas onFiltersChange={handleFiltersChange} />
+							<Button
+								onClick={() => setIsCreateModalOpen(true)}
+								className='flex-1 sm:flex-none'
+							>
+								<Plus className='mr-2 h-4 w-4' />
+								<span className='sm:inline'>Create Task</span>
+							</Button>
+						</div>
+						<Button
+							onClick={handleLogout}
+							variant='outline'
+							className='w-full sm:w-auto'
+						>
 							<LogOut className='mr-2 h-4 w-4' />
 							Logout
 						</Button>
@@ -257,69 +260,7 @@ export default function Page() {
 				</div>
 
 				{/* Task Summary */}
-				{!tasksLoading && (
-					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4'>
-						<Card>
-							<CardContent className='p-6'>
-								<div className='flex items-center space-x-2'>
-									<ListTodo className='h-5 w-5 text-blue-600' />
-									<div>
-										<p className='text-2xl font-bold'>{total}</p>
-										<p className='text-sm text-muted-foreground'>Total Tasks</p>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardContent className='p-6'>
-								<div className='flex items-center space-x-2'>
-									<Clock className='h-5 w-5 text-yellow-600' />
-									<div>
-										<p className='text-2xl font-bold'>
-											{
-												tasks.filter((task) => task.status === 'not_started')
-													.length
-											}
-										</p>
-										<p className='text-sm text-muted-foreground'>Not Started</p>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardContent className='p-6'>
-								<div className='flex items-center space-x-2'>
-									<AlertCircle className='h-5 w-5 text-orange-600' />
-									<div>
-										<p className='text-2xl font-bold'>
-											{
-												tasks.filter((task) => task.status === 'in_progress')
-													.length
-											}
-										</p>
-										<p className='text-sm text-muted-foreground'>In Progress</p>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-
-						<Card>
-							<CardContent className='p-6'>
-								<div className='flex items-center space-x-2'>
-									<CheckCircle2 className='h-5 w-5 text-green-600' />
-									<div>
-										<p className='text-2xl font-bold'>
-											{tasks.filter((task) => task.status === 'done').length}
-										</p>
-										<p className='text-sm text-muted-foreground'>Completed</p>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
-					</div>
-				)}
+				<TaskSummary />
 
 				{/* Tasks Table */}
 				<TaskList
