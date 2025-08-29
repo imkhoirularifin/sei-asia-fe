@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Plus, LogOut } from 'lucide-react';
 
@@ -28,7 +28,7 @@ import { TaskList } from '@/components/tasks/task-list';
 import { CreateTaskModal } from '@/components/tasks/create-task-modal';
 import { TaskSummary } from '@/components/tasks/task-summary';
 
-export default function Page() {
+function PageContent() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const [user, setUser] = useState<Partial<User>>({});
@@ -279,5 +279,13 @@ export default function Page() {
 				/>
 			</div>
 		</div>
+	);
+}
+
+export default function Page() {
+	return (
+		<Suspense fallback={<div>Loading...</div>}>
+			<PageContent />
+		</Suspense>
 	);
 }
