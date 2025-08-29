@@ -44,7 +44,7 @@ export default function RegisterPage() {
 		try {
 			const { username, password } = values;
 			await registerMutation.mutateAsync({ username, password });
-			router.push('/dashboard');
+			router.push('/');
 		} catch (error) {
 			console.error('Registration failed:', error);
 		}

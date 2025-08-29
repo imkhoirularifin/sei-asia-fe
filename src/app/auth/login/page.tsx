@@ -39,7 +39,7 @@ export default function LoginPage() {
 	async function onSubmit(values: LoginFormData) {
 		try {
 			await loginMutation.mutateAsync(values);
-			router.push('/dashboard');
+			router.push('/');
 		} catch (error) {
 			console.error('Login failed:', error);
 		}
