@@ -37,7 +37,7 @@ export interface Task {
 }
 
 // Task response DTOs
-export interface TaskResponseDto extends ApiResponse<Task> {}
+export type TaskResponseDto = ApiResponse<Task>;
 
 // Paginated task response
 export interface PaginatedTaskResponse {
@@ -48,8 +48,7 @@ export interface PaginatedTaskResponse {
 	totalPages: number;
 }
 
-export interface PaginatedTaskResponseDto
-	extends ApiResponse<PaginatedTaskResponse> {}
+export type PaginatedTaskResponseDto = ApiResponse<PaginatedTaskResponse>;
 
 // Task statistics
 export interface TaskStats {
@@ -62,7 +61,7 @@ export interface TaskStats {
 	};
 }
 
-export interface TaskStatsResponseDto extends ApiResponse<TaskStats> {}
+export type TaskStatsResponseDto = ApiResponse<TaskStats>;
 
 // Task query parameters for filtering and pagination
 export interface TaskQueryParams {

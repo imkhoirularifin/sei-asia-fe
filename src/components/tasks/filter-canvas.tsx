@@ -20,12 +20,7 @@ import {
 	SheetTitle,
 	SheetTrigger,
 } from '@/components/ui/sheet';
-import type {
-	TaskFilters,
-	TaskSort,
-	TaskStatus,
-	TaskPagination,
-} from '@/types/task';
+import type { TaskFilters, TaskSort, TaskStatus } from '@/types/task';
 
 const statusOptions = [
 	{ value: 'all', label: 'All Statuses' },

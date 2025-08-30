@@ -17,7 +17,6 @@ import type { User } from '@/types/auth';
 import { Button } from '@/components/ui/button';
 import {
 	Card,
-	CardContent,
 	CardDescription,
 	CardHeader,
 	CardTitle,

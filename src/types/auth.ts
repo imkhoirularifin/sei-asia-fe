@@ -23,7 +23,7 @@ export interface AuthResponseData {
 }
 
 // Complete auth response
-export interface AuthResponseDto extends ApiResponse<AuthResponseData> {}
+export type AuthResponseDto = ApiResponse<AuthResponseData>;
 
 export interface User {
 	id: string;
@@ -33,4 +33,4 @@ export interface User {
 }
 
 // User profile response
-export interface UserProfileResponseDto extends ApiResponse<User> {}
+export type UserProfileResponseDto = ApiResponse<User>;
