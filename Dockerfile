@@ -24,8 +24,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
 # Set build-time environment variable
-ARG NEXT_PUBLIC_API_URL=http://localhost:8080
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=NEXT_PUBLIC_API_URL
 
 # Build the application
 RUN pnpm build
@@ -41,9 +40,7 @@ RUN adduser --system --uid 1001 nextjs
 # Copy necessary files from builder stage
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
-
-# Create empty public directory for Next.js
-RUN mkdir -p ./public
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Change ownership to nextjs user
 RUN chown -R nextjs:nodejs /app
@@ -58,4 +55,7 @@ ENV PORT=3000
 ENV HOSTNAME="0.0.0.0"
 
 # Start the application
+COPY --chown=nextjs:nodejs entrypoint.sh ./
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]
 CMD ["node", "server.js"]
